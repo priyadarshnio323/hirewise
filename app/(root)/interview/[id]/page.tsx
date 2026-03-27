@@ -3,9 +3,8 @@ import { getInterviewById } from "@/lib/actions/general.action";
 import { getCurrentUser } from "@/lib/actions/auth.action"; // ✅ add this
 import { notFound } from "next/navigation";
 
-const InterviewPage = async ({ params }: PageProps) => {
-  const { id } = await params;
-  
+const InterviewPage = async ({ params }: { params: { id: string } }) => {
+const { id } = params;  
   const interview = await getInterviewById(id);
   if (!interview) notFound();
 
