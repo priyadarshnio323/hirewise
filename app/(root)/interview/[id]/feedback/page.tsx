@@ -11,6 +11,9 @@ const Feedback = async ({ params }: { params: { id: string } }) => {
   const user = await getCurrentUser();
   const interview = await getInterviewById(id);
   if (!interview) redirect("/");
+  if(!user) {
+  return <div>User not found</div>;
+}
 
   const feedback = await getFeedbackByInterviewId({
     interviewId: id,
@@ -59,7 +62,7 @@ const Feedback = async ({ params }: { params: { id: string } }) => {
         {feedback?.categoryScores && Object.entries(feedback.categoryScores).map(([key, value], index) => (
           <div key={index}>
             <p className="font-bold">
-              {index + 1}. {key.replace(/([A-Z])/g, ' $1').trim()} ({value as number}/100)
+              {index + 1}. {key.replace(/([A-Z])/g, ' $1').trim()} ({value.score as number}/100)
             </p>
           </div>
         ))}
