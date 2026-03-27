@@ -1,0 +1,195 @@
+
+---
+
+**AUTHENTICATION FLOW**
+
+```
+firebase/client.ts
+  ↓ initialises Firebase app with public env variables
+  ↓ exports auth object
+
+lib/actions/auth.action.ts
+  ↓ uses client.ts auth object
+  ↓ signUp() — creates user in Firebase Authentication
+  ↓ signIn() — logs in user, gets token
+  ↓ getCurrentUser() — reads session cookie, returns user object
+  ↓ signOut() — clears session
+
+app/(auth)/sign-up/page.tsx
+app/(auth)/sign-in/page.tsx
+  ↓ calls signUp() or signIn() from auth.action.ts
+  ↓ on success redirects to homepage
+```
+
+---
+
+**TYPES FLOW**
+
+```
+types/index.d.ts
+  ↓ defines global interfaces used everywhere
+  ↓ Interview — id, role, techstack, level, type, userId, questions, finalized, createdAt
+  ↓ Feedback — id, interviewId, userId, totalScore, categoryScores, strengths, areasForImprovement, finalAssessment
+  ↓ SavedMessage — role ("user" | "assistant"), content
+  ↓ InterviewCardProps — interviewId, userId, role, type, techstack, level, createdAt
+  ↓ CreateFeedbackParams — interviewId, userId, transcript, feedbackId
+  ↓ GetFeedbackByInterviewIdParams — interviewId, userId
+  ↓ No imports needed — available globally throughout entire project
+```
+
+---
+
+**HOMEPAGE FLOW**
+
+```
+firebase/admin.ts
+  ↓ initialises Firebase Admin SDK with private service account
+  ↓ exports db (Firestore instance)
+
+lib/actions/general.action.ts
+  ↓ uses admin.ts db object
+  ↓ getInterviewsByUserId() — fetches current user's interviews
+  ↓ getLatestInterviews() — fetches other users' interviews
+
+app/(root)/page.tsx  ← SERVER COMPONENT
+  ↓ calls getCurrentUser() from auth.action.ts
+  ↓ calls getInterviewsByUserId(user.id) from general.action.ts
+  ↓ calls getLatestInterviews({ userId: user.id }) from general.action.ts
+  ↓ renders homepage with two sections
+
+components/InterviewCard.tsx  ← ASYNC SERVER COMPONENT
+  ↓ receives interviewId, userId, role, type, techstack, level, createdAt as props
+  ↓ calls getFeedbackByInterviewId({ interviewId, userId })
+  ↓ if feedback exists → shows score, Check Feedback button
+  ↓ if no feedback → shows ---, View Interview button
+  ↓ uses dayjs to format date
+  ↓ uses getRandomInterviewCover(interviewId) for deterministic cover image
+
+components/DisplayTechIcons.tsx
+  ↓ receives techStack array as prop
+  ↓ calls getTechLogos() from lib/utils.ts
+  ↓ fetches tech icons from devicons CDN
+  ↓ displays up to 3 icons with tooltip
+```
+
+---
+
+**INTERVIEW SETUP FLOW**
+
+```
+app/(root)/interview/page.tsx  ← SERVER COMPONENT
+  ↓ calls getCurrentUser()
+  ↓ passes user.name, user.id, type="generate" to Agent
+
+components/Agent.tsx  ← CLIENT COMPONENT
+  ↓ type="generate" triggers setup flow
+  ↓ startInterview() — requests mic permission, speaks welcome message
+  ↓ handleSetupMode() runs through 4 stages:
+      Stage 0 → asks role → stores in collectedRoleRef
+      Stage 1 → asks techstack → stores in collectedTechRef
+      Stage 2 → asks interview type → stores in collectedTypeRef
+      Stage 3 → asks level → calls /api/interview/create
+
+app/api/interview/create/route.ts  ← API ROUTE
+  ↓ receives role, techstack, level, type, userId
+  ↓ calls createInterview() from general.action.ts
+
+lib/actions/general.action.ts → createInterview()
+  ↓ calls Gemini to generate 5 questions
+  ↓ falls back to hardcoded questions if quota exceeded
+  ↓ saves interview document to Firestore with finalized: true
+  ↓ returns interviewId
+
+Agent.tsx
+  ↓ receives interviewId from API response
+  ↓ router.push(`/interview/${interviewId}`)
+```
+
+---
+
+**LIVE INTERVIEW FLOW**
+
+```
+app/(root)/interview/[id]/page.tsx  ← SERVER COMPONENT
+  ↓ calls getInterviewById(id) from general.action.ts
+  ↓ calls getCurrentUser()
+  ↓ passes role, level, techstack, interviewMode, userId to Agent
+
+components/Agent.tsx  ← CLIENT COMPONENT
+  ↓ type="interview-live" triggers live interview flow
+  ↓ startInterview() — speaks welcome message
+  ↓ sends FIRST_QUESTION to /api/gemini to get opening question
+  ↓ speakText() — speaks question aloud using SpeechSynthesis
+  ↓ startListening() — starts SpeechRecognition
+  ↓ user speaks → onresult fires → handleUserSpeech(transcript)
+  ↓ handleLiveInterview() called:
+      checks elapsed time and conversationCountRef
+      if limit reached → calls /api/feedback/create then redirects
+      otherwise → sends transcript to /api/gemini
+
+app/api/gemini/route.ts  ← API ROUTE
+  ↓ receives message, type, role, level, techstack, interviewMode, messageHistory
+  ↓ isFirstQuestion check — different prompt for first question
+  ↓ builds prompt based on interviewMode (technical/behavioural/mixed)
+  ↓ calls gemini-2.5-flash (fallback gemini-2.0-flash)
+  ↓ returns reply text
+
+Agent.tsx
+  ↓ receives reply
+  ↓ adds to messages state
+  ↓ speakText(reply) — speaks question
+  ↓ startListening() — waits for next answer
+  ↓ loop continues until limit reached
+```
+
+---
+
+**FEEDBACK FLOW**
+
+```
+Agent.tsx
+  ↓ interview ends (10 exchanges or 5 minutes)
+  ↓ calls /api/feedback/create with interviewId, userId, transcript (messages array)
+
+app/api/feedback/create/route.ts  ← API ROUTE
+  ↓ calls createFeedback() from general.action.ts
+
+lib/actions/general.action.ts → createFeedback()
+  ↓ formats transcript into readable string
+  ↓ calls gemini-2.5-flash with evaluation prompt
+  ↓ parses JSON response — totalScore, categoryScores, strengths, areasForImprovement, finalAssessment
+  ↓ falls back to default scores if Gemini fails
+  ↓ saves feedback document to Firestore
+  ↓ returns feedbackId
+
+Agent.tsx
+  ↓ router.push("/") — redirects to homepage
+
+app/(root)/page.tsx
+  ↓ InterviewCard fetches feedback for this interview
+  ↓ shows score and Check Feedback button
+
+app/(root)/interview/[id]/feedback/page.tsx  ← SERVER COMPONENT
+  ↓ calls getInterviewById(id)
+  ↓ calls getFeedbackByInterviewId({ interviewId, userId })
+  ↓ displays full feedback report with all scores and assessment
+```
+
+---
+
+**CONSTANTS AND UTILITIES**
+
+```
+constants/index.ts
+  ↓ feedbackSchema — zod schema (defined but unused after switching to @google/generative-ai)
+  ↓ mappings — tech name to devicon name mapping
+  ↓ interviewCovers — list of cover image paths
+
+lib/utils.ts
+  ↓ cn() — combines Tailwind classes using clsx and tailwind-merge
+  ↓ getTechLogos() — fetches tech icons from devicons CDN
+  ↓ getRandomInterviewCover(id) — returns deterministic cover image based on interviewId
+```
+
+---
+

@@ -13,16 +13,23 @@ interface Feedback {
   createdAt: string;
 }
 
+interface SavedMessage {
+  role: "user" | "assistant";
+  content: string;
+}
+
 interface Interview {
   id: string;
   role: string;
   level: string;
-  questions: string[];
-  techstack: string[];
-  createdAt: string;
-  userId: string;
   type: string;
-  finalized: boolean;
+  techstack: string[];
+  userId: string;
+  questions?: string[];
+  finalized?: boolean;
+  status?: string;
+  createdAt?: string;
+  interviewMode?: "technical" | "behavioural" | "mixed";
 }
 
 interface CreateFeedbackParams {
@@ -52,8 +59,12 @@ interface AgentProps {
   userId?: string;
   interviewId?: string;
   feedbackId?: string;
-  type: "generate" | "interview";
+  type: "generate" | "interview" | "interview-live";
   questions?: string[];
+  role?: string;
+  level?: string;
+  techstack?: string[];
+  interviewMode?: "technical" | "behavioural" | "mixed";
 }
 
 interface RouteParams {
