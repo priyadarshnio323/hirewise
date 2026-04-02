@@ -26,6 +26,8 @@ const InterviewCard = async ({
     feedback?.createdAt || createdAt || Date.now()
   ).format("MMM D, YYYY");
 
+  console.log("Passing interviewId:", interviewId);
+
   return (
     <div className="card-border w-[360px] max-sm:w-full min-h-96">
       <div className="card-interview">
@@ -73,6 +75,7 @@ const InterviewCard = async ({
         </div>
       </div>
     </div>
+    
   );
 };
 

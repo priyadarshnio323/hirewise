@@ -299,7 +299,7 @@ setMessages(updatedMessages);
       ? (new Date().getTime() - startTimeRef.current.getTime()) / 60000
       : 0;
 
-      if (elapsed >= 3 || conversationCountRef.current >= 6) {
+      if (elapsed >= 3 || conversationCountRef.current >= 2) {
     const endMsg = "That wraps up our interview! Generating your feedback now...";
     setMessages(prev => [...prev, { role: "assistant" as const, content: endMsg }]);
     await speakText(endMsg);
