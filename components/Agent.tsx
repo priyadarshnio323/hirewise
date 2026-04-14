@@ -538,14 +538,16 @@ const endInterview = async () => {
       </div>
 
       {messages.length > 0 && (
-  <div className="transcript-border">
-    <div className="transcript">
-      {/* ✅ show last AI message large and clear */}
-      {messages.filter(m => m.role === "assistant").slice(-1).map((msg, i) => (
-        <p key={i} className="text-lg font-medium">{msg.content}</p>
-      ))}
-    </div>
+<div className="transcript-border mt-6 mb-4">
+  <div className="transcript">
+    {messages.filter(m => m.role === "assistant").slice(-1).map((msg, i) => (
+      <p key={i} className="text-lg font-medium text-center leading-relaxed">
+        {msg.content}
+      </p>
+    ))}
   </div>
+</div>
+
 )}
 
       <div className="w-full flex flex-col items-center gap-4">
