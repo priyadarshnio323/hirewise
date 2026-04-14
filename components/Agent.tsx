@@ -504,6 +504,7 @@ const endInterview = async () => {
 
   return (
     <>
+    <div className="w-full flex flex-col items-center gap-6">
       <div className="call-view">
         <div className="card-interviewer">
           <div className="avatar">
@@ -550,7 +551,7 @@ const endInterview = async () => {
 
 )}
 
-      <div className="w-full flex flex-col items-center gap-4">
+      <div className="w-full flex flex-col items-center gap-4 ">
         <div className="flex justify-center gap-4">
           {callStatus !== "ACTIVE" ? (
             <button className="px-6 py-3 bg-blue-600 text-white rounded-lg" onClick={startInterview}>
@@ -571,6 +572,7 @@ const endInterview = async () => {
             {isListening ? "Listening..." : "🎤 Speak"}
           </button>
         )}
+      </div>
       </div>
     </>
   );
