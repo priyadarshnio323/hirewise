@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import { getFeedbackByInterviewId, getInterviewById } from "@/lib/actions/general.action";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { getCurrentUser } from "@/lib/actions/auth.action";
 
 const Feedback = async ({ params }: { params: { id: string } }) => {

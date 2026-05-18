@@ -1,24 +1,40 @@
 import { isAuthenticated } from '@/lib/actions/auth.action'
 import { redirect } from 'next/navigation';
-import Link from 'next/link'
-import React, { ReactNode } from 'react'
+import Navbar from '../../components/Navbar';  
+import Footer from '@/components/Footer';
 
-const RootLayout =  async ({children} : {children : ReactNode}) => {
+const RootLayout = async ({ children }: { children: React.ReactNode }) => {
   const isUserAuthenticated = await isAuthenticated();
-  if(!isUserAuthenticated){
+
+  if (!isUserAuthenticated) {
     redirect("/sign-in");
   }
-  return (
-    <div className='root-layout'>
-      <nav className='flex items-center gap-2'>
-        <Link href={'/'}>
-        <h2 className="text-primary-100">HireWise</h2>
-        </Link>
-      </nav>
-      {children}
-      
-    </div>
-  )
-}
 
-export default RootLayout
+  return (
+    <div className='root-layout min-h-screen flex flex-col '>
+       <header className='fixed top-0 left-0 w-full z-50'>
+              <Navbar />   
+      </header>
+      <main className='flex-1'>
+    {children}
+  </main>
+  <footer className='w-full'>
+    <Footer />
+  </footer>
+  
+</div>
+
+  );
+};
+
+export default RootLayout;
+
+{/* <header className='fixed top-0 left-0 w-full z-50'>
+              <Navbar />   
+      </header>
+      <main className='pt-14 flex-1'>
+        {children}
+      </main>
+      <footer className='fixed bottom-0 w-full z-50'>
+               <Footer />
+      </footer>  */}

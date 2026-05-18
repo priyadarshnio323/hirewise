@@ -7,11 +7,13 @@ import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { FiEye, FiEyeOff } from "react-icons/fi";
+import "animate.css";
 
 
-
-import { Form } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
+import { Form } from "@/components/ui/Form";
+import { Button } from "@/components/ui/Button";
 
 import FormField from "./FormField";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
@@ -44,6 +46,7 @@ const authFormSchema = (type: FormType) =>
 
 const AuthForm = ({ type }: { type: FormType }) => {
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
 
   const formSchema = authFormSchema(type);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -107,63 +110,101 @@ const AuthForm = ({ type }: { type: FormType }) => {
 
 
   return (
-    <div className="card-border lg:min-w-[566px]">
-      <div className="flex flex-col gap-6 card py-14 px-10">
-        <div className="flex flex-row gap-2 justify-center">
-          <h2 className="text-primary-100">HireWise</h2>
-        </div>
+  <div className="min-h-screen flex">
 
-        <h3 className="text-center">Ace your job interviews with AI</h3>
+    {/* LEFT */}
+    <div className="hidden lg:flex w-1/2 flex-col justify-center px-20 bg-gradient-to-br from-green-800 to-green-900">
+      <h1 className="text-5xl font-extrabold text-white mb-6 tracking-tight animate__animated animate__fadeInUp">
+  HireWise
+</h1>
 
-        <Form {...form}>
-          <form
-  onSubmit={form.handleSubmit(onSubmit)}
-            className="w-full space-y-6 mt-4 form"
-          >
-            {!isSignIn && (
-              <FormField
-                control={form.control}
-                name="name"
-                label="Name"
-                placeholder="Your Name"
-                type="text"
-              />
-            )}
+<p className="text-2xl text-gray-200 mb-8 leading-relaxed max-w-lg animate__animated animate__fadeInUp animate__delay-1s">
+  Ace your{" "}
+  <span className="text-[#D4E157] font-semibold">
+    job interviews
+  </span>{" "}
+  with AI-powered mock sessions, instant feedback, and smart insights.
+</p>
+    
+    </div>
 
+    {/* RIGHT */}
+    <div className="w-full lg:w-1/2 max-w-[720px] lg:max-w-none mx-auto flex flex-col justify-center px-6 sm:px-12 lg:px-24 bg-gradient-to-br from-blue-50 to-white">
+      
+      <h2 className="text-4xl font-bold mb-3 text-gray-800">
+        {isSignIn ? "Welcome Back" : "Create Account"}
+      </h2>
+
+      <p className="text-lg text-gray-600 mb-8">
+        {isSignIn
+          ? "Login to continue"
+          : "Start your interview journey"}
+      </p>
+
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="form space-y-6 w-full max-w-md "
+        >
+          {!isSignIn && (
             <FormField
               control={form.control}
-              name="email"
-              label="Email"
-              placeholder="Your email address"
-              type="email"
+              name="name"
+              label="Name"
+              placeholder="Your Name"
+              type="text"
             />
+          )}
 
+          <FormField
+            control={form.control}
+            name="email"
+            label="Email"
+            placeholder="Your email"
+            type="email"
+          />
+
+          <div className="relative">
             <FormField
               control={form.control}
               name="password"
               label="Password"
-              placeholder="Enter your password"
-              type="password"
+              placeholder="Enter password"
+              type={showPassword ? "text" : "password"}
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-4 size-8 top-7.5 text-gray-500 hover:text-gray-700 xs-hidden"
+            >
+              {showPassword ? <FiEyeOff /> : <FiEye />}
+            </button>
+          </div>
 
-            <Button className="btn" type="submit">
-              {isSignIn ? "Sign In" : "Create an Account"}
-            </Button>
-          </form>
-        </Form>
-
-        <p className="text-center">
-          {isSignIn ? "Don't have an account yet?" : "Have an account already?"}
-          <Link
-            href={!isSignIn ? "/sign-in" : "/sign-up"}
-            className="font-bold text-user-primary ml-1"
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition"
           >
-            {!isSignIn ? "Sign In" : "Sign Up"}
-          </Link>
-        </p>
-      </div>
+            {isSignIn ? "Sign In" : "Sign Up"}
+          </button>
+        </form>
+      </Form>
+
+      <p className="text-base mt-8 text-gray-600">
+        {isSignIn
+          ? "Don't have an account?"
+          : "Already have an account?"}
+        <Link
+          href={!isSignIn ? "/sign-in" : "/sign-up"}
+          className="text-blue-600 ml-2 font-semibold"
+        >
+          {!isSignIn ? "Sign In" : "Sign Up"}
+        </Link>
+      </p>
+
     </div>
-  );
+  </div>
+);
 };
 
 export default AuthForm;

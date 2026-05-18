@@ -10,17 +10,22 @@
   --color-destructive-100: #f75353;
   --color-destructive-200: #c44141;
 
-  --color-primary-100: #dddfff;
-  --color-primary-200: #cac5fe;
+  --color-primary-100: #FFEF91;
+  --color-primary-200: #9AD872;
+  --color-primary-300: #FFA02E;
+
 
   --color-light-100: #d6e0ff;
-  --color-light-400: #6870a6;
+  --color-light-400: #898989 ;
   --color-light-600: #4f557d;
   --color-light-800: #24273a;
 
+  --color-gray-100: #D9D9D9;
+
   --color-dark-100: #020408;
   --color-dark-200: #27282f;
-  --color-dark-300: #242633;
+  --color-dark-300: #3A93F8;
+  --color-dark-400: #FDC1C1;
 
   --font-mona-sans: "Mona Sans", sans-serif;
 
@@ -31,6 +36,10 @@
   --radius: 0.625rem;
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
+  --background-interview-card:  linear-gradient(145deg, #0f172a 0%, #1e293b 100%);
+  --trans-background: linear-gradient(135deg, #0a0f1e 0%, #0f172a 100%);
+  --trans-border: 1px solid rgba(59, 147, 248, 0.3);
+
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
   --primary: oklch(0.205 0 0);
@@ -63,8 +72,8 @@
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
+  --background: oklch(97.761% 0.00216 199.957);
+  --foreground: oklch(95.614% 0.00969 16.71);
   --card: oklch(0.205 0 0);
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
@@ -142,11 +151,16 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    background: white;
+    background-attachment: fixed;
+      @apply text-dark-100;
   }
   p {
-    @apply text-light-100;
-  }
+  @apply text-black/[57%];
+  /* Syntax: [text-shadow:x_y_blur_color] */
+  @apply [text-shadow:0_2px_4px_rgba(0,0,0,0.3)];
+}
+
   h2 {
     @apply text-3xl font-semibold;
   }
@@ -177,11 +191,14 @@
   .btn-upload {
     @apply flex min-h-14 w-full items-center justify-center gap-1.5 rounded-md;
   }
-  .btn-primary {
-    @apply w-fit !bg-primary-200 !text-dark-100 hover:!bg-primary-200/80 !rounded-full !font-bold px-5 cursor-pointer min-h-10;
-  }
+ .btn-primary {
+  @apply w-fit !rounded-full px-6 py-2.5 !font-bold transition-all duration-200 
+  !bg-gray-100 !text-dark-100 hover:bg-dark-300/90 active:scale-95 flex items-center justify-center cursor-pointer select-none;
+}
+
   .btn-secondary {
-    @apply w-fit !bg-dark-200 !text-primary-200 hover:!bg-dark-200/80 !rounded-full !font-bold px-5 cursor-pointer min-h-10;
+    @apply w-fit !bg-[image:var(--background-interview-card)] !text-white hover:!bg-dark-200/80 !rounded-full !font-bold 
+     px-5 cursor-pointer min-h-10;
   }
 
   .btn-upload {
@@ -189,59 +206,69 @@
   }
 
   .card-border {
-    @apply border-gradient p-0.5 rounded-2xl w-fit;
-  }
+  @apply border-gradient rounded-2xl w-full h-full overflow-hidden;
+}
 
   .card {
     @apply dark-gradient rounded-2xl min-h-full;
   }
 
+
+
   .form {
     @apply w-full;
 
     .label {
-      @apply !text-light-100 !font-normal;
+      @apply !text-gray-700 !font-medium;
     }
 
     .input {
-      @apply !bg-dark-200 !rounded-full !min-h-12 !px-5 placeholder:!text-light-100;
+      @apply !bg-blue-50 !rounded-full !min-h-12 !px-5 !text-gray-900 placeholder:!text-gray-400;
     }
 
     .btn {
       @apply !w-full !bg-primary-200 !text-dark-100 hover:!bg-primary-200/80 !rounded-full !min-h-10 !font-bold !px-5 cursor-pointer;
     }
   }
+  
+.call-wrapper {
+  @apply flex flex-col gap-4 mx-[3rem] my-[2rem] max-sm:mx-[1rem] max-sm:my-[1rem];
+}
 
-  .call-view {
-    @apply flex sm:flex-row flex-col gap-10 items-center justify-between w-full;
+
+.call-view {
+  @apply flex sm:flex-row flex-col gap-10 items-center justify-between w-full;
 
     h3 {
-      @apply text-center text-primary-100 mt-5;
+      @apply text-center text-light-100 mt-5;
     }
 
-    .card-interviewer {
-      @apply flex-center flex-col gap-2 p-7 h-[400px] blue-gradient-dark rounded-lg border-2 border-primary-200/50 flex-1 sm:basis-1/2 w-full;
-    }
-
-    .avatar {
-      @apply z-10 flex items-center justify-center blue-gradient rounded-full size-[120px] relative;
-
-      .animate-speak {
-        @apply absolute inline-flex size-5/6 animate-ping rounded-full bg-primary-200 opacity-75;
-      }
-    }
-
-    .card-border {
-      @apply border-gradient p-0.5 rounded-2xl flex-1 sm:basis-1/2 w-full h-[400px] max-md:hidden;
-    }
-
-    .card-content {
-      @apply flex flex-col gap-2 justify-center items-center p-7 dark-gradient rounded-2xl min-h-full;
-    }
+  .card-interviewer {
+      @apply flex-center flex-col gap-2  h-[350px] blue-gradient-dark rounded-2xl border-2 border-light-100/50 flex-1 sm:basis-1/2 w-full;
   }
 
-  .transcript-border {
-    @apply border-gradient p-0.5 rounded-2xl w-full;
+  .avatar {
+    @apply z-10 flex items-center justify-center blue-gradient rounded-full size-[120px] relative;
+
+    .animate-speak {
+      @apply absolute inline-flex size-5/6 animate-ping rounded-full bg-light-100 opacity-75;
+    }
+  }
+  
+
+}
+  .interviewee-card {
+  @apply flex-1 sm:basis-1/2 w-full h-[350px] max-md:hidden
+         blue-gradient-dark rounded-2xl border-2 border-light-100/50;
+}
+
+.card-content {
+  @apply flex flex-col gap-2 justify-center items-center p-5 
+         rounded-2xl min-h-full; 
+}
+
+  /* .transcript-border {
+    @apply border-2 border-dark-100/50 rounded-2xl w-full;
 
     .transcript {
       @apply dark-gradient rounded-2xl  min-h-12 px-5 py-3 flex items-center justify-center;
@@ -250,7 +277,21 @@
         @apply text-lg text-center text-white;
       }
     }
+  } */
+
+  .transcript-border {
+  /* Changed from rounded-l-2xl to rounded-full */
+  @apply rounded-full w-full !border-[image:var(--trans-border)] border-2;
+
+  .transcript {
+    /* Changed from rounded-l-2xl to rounded-full */
+    @apply rounded-full min-h-12 px-5 py-3 flex items-center justify-center !bg-[image:var(--trans-background)] ;
+
+    p {
+      @apply text-lg text-center text-white text-shadow-none;
+    }
   }
+}
 
   .section-feedback {
     @apply flex flex-col gap-8 max-w-5xl mx-auto max-sm:px-4 text-lg leading-7;
@@ -265,20 +306,88 @@
   }
 
   .root-layout {
-    @apply flex mx-auto max-w-7xl flex-col gap-12 my-12 px-16 max-sm:px-4 max-sm:my-8;
-  }
+  @apply flex w-full flex-col gap-12  max-sm:px-4 max-sm:my-8  ;
+}
 
   .card-cta {
-    @apply flex flex-row blue-gradient-dark rounded-3xl px-16 py-6 items-center justify-between max-sm:px-4;
+     @apply w-full min-h-screen flex flex-col items-center justify-center gap-6 px-16 py-16 mb-0 max-sm:px-4;
+
+       > div {
+               @apply flex flex-col items-center justify-center w-full max-w-6xl;      
+      
+               h2 {
+                    @apply text-3xl md:text-5xl font-bold leading-tight text-left;
+                  }  
+
+                p {
+                    @apply text-xl md:text-2xl font-medium text-left;
+                  }
+      
+                button {
+                    @apply mx-auto;
+                  }
+         }
+  }
+.speak-button {
+  @apply px-7 py-3 font-bold rounded-full transition-colors
+         disabled:opacity-50 disabled:cursor-not-allowed text-white;
+  background: linear-gradient(135deg, #1e40af 0%, #3A93F8 100%);
+}
+
+.speak-button:hover {
+  background: linear-gradient(135deg, #3A93F8 0%, #60a5fa 100%);
+}
+
+.call-button {
+  @apply px-8 py-3 font-bold rounded-full transition-colors text-white;
+  background: linear-gradient(135deg, #1e40af 0%, #3A93F8 100%);
+}
+
+.call-button:hover {
+  background: linear-gradient(135deg, #3A93F8 0%, #60a5fa 100%);
+}
+.end-button {
+  @apply px-7 py-3 font-bold rounded-full transition-colors text-white;
+  background: linear-gradient(135deg, #7f1d1d 0%, #f75353 100%);
+}
+
+.end-button:hover {
+  background: linear-gradient(135deg, #f75353 0%, #ef4444 100%);
+}
+  /* .call-button{
+    @apply px-8 py-3 bg-primary-200 text-dark-100 font-bold rounded-full hover:bg-primary-200/80 transition-colors;
+  }
+
+  .end-button{
+    @apply px-7 py-3 bg-destructive-100 text-white font-bold rounded-full hover:bg-destructive-200 transition-colors;
+  }
+
+  .speak-button{
+    @apply px-7 py-3 bg-primary-200 text-white font-bold rounded-full hover:bg-success-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
+  } */
+  .interview-block{
+    @apply flex flex-col gap-6 mt-8 w-full max-w-6xl mx-auto px-4 bg-[#F0E68Cusu];
   }
 
   .interviews-section {
-    @apply flex flex-wrap gap-4 max-lg:flex-col w-full items-stretch;
+    @apply grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full max-w-7xl mx-auto text-white;
   }
 
-  .interview-text {
-    @apply text-lg text-center text-white;
+  .search-bar {
+  @apply flex items-center gap-4 w-fit;
+}
+
+.interview-block-explore {
+  @apply flex flex-col gap-6 mx-[3rem] my-[2rem] max-sm:mx-[1rem];
+}
+
+@media (max-width: 460px) {
+  .call-wrapper,
+  .interview-block-explore {
+    margin-left: 0.75rem;
+    margin-right: 0.75rem;
   }
+}
 
   .progress {
     @apply h-1.5 text-[5px] font-bold bg-primary-200 rounded-full flex-center;
@@ -288,36 +397,137 @@
     @apply absolute bottom-full mb-1 hidden group-hover:flex px-2 py-1 text-xs text-white bg-gray-700 rounded-md shadow-md;
   }
 
-  .card-interview {
-    @apply dark-gradient rounded-2xl min-h-full flex flex-col p-6 relative overflow-hidden gap-10 justify-between;
+    .card-interview {
+    @apply bg-[image:var(--background-interview-card)] rounded-2xl min-h-full flex flex-col p-6 relative overflow-hidden gap-10 justify-between;
 
     .badge-text {
       @apply text-sm font-semibold capitalize;
     }
+    
   }
 }
 
+.card-interview h3 {
+  @apply !text-white;
+}
+
+.card-interview p {
+  @apply !text-gray-300;
+  text-shadow: none !important;
+}
+
+
+ .features-block {
+  /* Using items-center ensures the text and robot stay level */
+  @apply flex flex-col md:flex-row items-center justify-between gap-12 px-8 md:px-24 py-4 mt-0;
+}
+
+.evenStep{
+  @apply bg-[#e0aaff] text-white px-6 py-4 rounded-lg tracking-wide;
+}
+
+.oddStep{
+  @apply bg-[#9d4edd] text-white px-6 py-4 rounded-lg tracking-wide;
+
+}
+
+
+/* .steps-wrapper {
+  @apply w-full px-4 py-8;
+}
+
+.steps-flex {
+  @apply flex flex-col gap-4 max-w-2xl mx-auto;
+}
+
+.step {
+  @apply rounded-2xl px-6 py-5 shadow-md;
+}
+
+.step-title {
+  @apply text-base font-bold mb-1 text-dark-100;
+}
+
+.step-desc {
+  @apply text-sm italic leading-relaxed;
+}
+
+.step-odd {
+  background-color: #88a7fa;
+  @apply text-dark-100;
+}
+
+.step-even {
+  background-color: #ddf5fc;
+  @apply text-dark-100 ;
+} */
+
+
+.steps-wrapper {
+  @apply w-full px-4 py-8;
+}
+
+.steps-grid {
+  /* Force 1 column on mobile, exactly 2 columns on tablets/desktop */
+  @apply grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-4xl mx-auto;
+}
+
+
+.step {
+  @apply rounded-2xl px-6 py-5 shadow-md;
+}
+
+/* Replicates the blue highlighted border in your layout image
+.step-active {
+  @apply ring-2 ring-blue-500;
+} */
+
+.step-title {
+  @apply text-base font-bold mb-1 text-dark-100;
+}
+
+.step-desc {
+  @apply text-sm leading-relaxed;
+}
+
+.step-dark {
+  background-color: #e1abfa;
+  @apply text-gray-100;
+}
+
+.step-light {
+  background-color: #ffc6fa;
+  @apply text-gray-100;
+}
+
 @utility dark-gradient {
-  @apply bg-gradient-to-b from-[#1A1C20] to-[#800080];
+@apply bg-gradient-to-b from-[#1A1C20] to-[#08090D];
 }
 
 
 @utility border-gradient {
-  @apply bg-gradient-to-b from-[#4B4D4F] to-[#4B4D4F33];
+  @apply border border-primary-200/50;
 }
 
 @utility pattern {
   @apply bg-[url('/pattern.png')] bg-top bg-no-repeat;
 }
 
-@utility blue-gradient-dark {
-  @apply bg-gradient-to-b from-[purple] to-[#08090D];
-}
+  @utility green-gradient-dark {
+  @apply bg-gradient-to-b from-[#006400]/50 to-[#08090D]/50;
+  }
 
 @utility blue-gradient {
   @apply bg-gradient-to-l from-[#FFFFFF] to-[#CAC5FE];
 }
 
+@utility blue-gradient-dark {
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+}
+
+@utility green-gradient {
+  @apply bg-gradient-to-l from-[#49DE50] to-[#6A994E];
+}
 @utility flex-center {
   @apply flex items-center justify-center;
 }
@@ -334,5 +544,20 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+
+
+.animate-breathe {
+  animation: breathe 1.5s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
   }
 }

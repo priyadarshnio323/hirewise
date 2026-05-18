@@ -27,10 +27,7 @@ const InterviewPage = async ({ params }: PageProps) => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-2">{interview.role} Interview</h1>
-      <p className="text-gray-600 mb-6">
-        Level: {interview.level} | Tech: {interview.techstack?.join(", ")}
-      </p>
+      
       
       <Agent
         userName={user?.name || "You"}

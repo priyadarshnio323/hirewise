@@ -22,8 +22,12 @@ const checkIconExists = async (url: string) => {
   }
 };
 
-export const getTechLogos = async (techArray: string[]) => {
-  const logoURLs = techArray.map((tech) => {
+export const getTechLogos = async (techstack: string[]) => {
+  console.log(techstack, typeof techstack);
+
+  const logoURLs = techstack.map((tech) => {
+    console.log("techstack:", techstack);
+console.log("isArray:", Array.isArray(techstack));
     const normalized = normalizeTechName(tech);
     return {
       tech,
@@ -42,26 +46,13 @@ export const getTechLogos = async (techArray: string[]) => {
 };
 
 export const getRandomInterviewCover = (id?: string) => {
-  const covers = [
-    "/covers/adobe.png",
-    "/covers/amazon.png",
-    "/covers/facebook.png",
-    "/covers/hostinger.png",
-    "/covers/pinterest.png",
-    "/covers/quora.png",
-    "/covers/reddit.png",
-    "/covers/skype.png",
-    "/covers/spotify.png",
-    "/covers/telegram.png",
-    "/covers/tiktok.png",
-    "/covers/yahoo.png",
-  ];
+  
 
   if (id) {
     // ✅ deterministic — same id always gives same cover
-    const index = id.charCodeAt(0) % covers.length;
-    return covers[index];
+    const index = id.charCodeAt(0) % interviewCovers.length;
+    return interviewCovers[index];
   }
 
-  return covers[Math.floor(Math.random() * covers.length)];
+  return interviewCovers[Math.floor(Math.random() * interviewCovers.length)];
 };

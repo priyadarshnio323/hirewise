@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import BackButton from "./ui/BackButton";
 
 enum CallStatus {
   INACTIVE = "INACTIVE",
@@ -503,79 +504,117 @@ const endInterview = async () => {
   }, [callStatus, router]);
 
   return (
-    <>
-    <div className="w-full flex flex-col items-center gap-6">
-      <div className="call-view">
-        <div className="card-interviewer">
-          <div className="avatar">
-            <Image src="/ai-avatar.png" alt="profile-image" width={65} height={54} className="object-cover" />
-            {(isSpeaking || isListening || isProcessing) && <span className="animate-speak" />}
-          </div>
-          <h3>AI Interviewer</h3>
-          <div className="status-indicator mt-2">
-            {isProcessing ? <p className="text-yellow-500">🤔 Thinking...</p>
-              : isSpeaking ? <p className="text-green-500">🔊 Speaking...</p>
-              : isListening ? <p className="text-blue-500">🎤 Listening...</p>
-              : callStatus === CallStatus.ACTIVE ? <p className="text-purple-500">Ready</p>
-              : <p className="text-gray-500">Not started</p>}
-          </div>
-          {type === "generate" && callStatus === CallStatus.ACTIVE && setupStage < 4 && (
-            <p className="text-sm mt-2">Step {setupStage + 1} of 4</p>
-          )}
-          {type === "interview-live" && callStatus === CallStatus.ACTIVE && (
-            <p className="text-sm mt-2">Live Interview • {conversationCount} exchanges</p>
-          )}
-          {type === "interview" && questions.length > 0 && (
-            <p className="text-sm mt-2">Question {currentQuestionIndex + 1} of {questions.length}</p>
-          )}
-        </div>
-
-        <div className="card-border">
-          <div className="card-content">
-            <Image src="/user-avatar.png" alt="profile-image" width={120} height={120} className="rounded-full object-cover size-[120px]" />
-            <h3>{userName}</h3>
-          </div>
-        </div>
-      </div>
-
-      {messages.length > 0 && (
-<div className="transcript-border mt-6 mb-4">
-  <div className="transcript">
-    {messages.filter(m => m.role === "assistant").slice(-1).map((msg, i) => (
-      <p key={i} className="text-lg font-medium text-center leading-relaxed">
-        {msg.content}
+          <div className="call-wrapper">
+            {callStatus === CallStatus.INACTIVE && type === "interview-live" && (
+    <div className="px-2 mb-2">
+      <h1 className="text-2xl font-bold capitalize">{role} Interview</h1>
+      <p className="text-gray-500 text-sm mt-1">
+        Level: {level} | Tech: {techstack?.join(", ")}
       </p>
-    ))}
-  </div>
-</div>
-
-)}
-
-      <div className="w-full flex flex-col items-center gap-4 ">
-        <div className="flex justify-center gap-4">
-          {callStatus !== "ACTIVE" ? (
-            <button className="px-6 py-3 bg-blue-600 text-white rounded-lg" onClick={startInterview}>
-              {type === "generate" ? "Start Setup" : "Start Interview"}
-            </button>
-          ) : (
-            <button className="px-6 py-3 bg-red-600 text-white rounded-lg" onClick={endInterview}>
-              End
-            </button>
-          )}
+    </div>
+  )}
+              <div className="call-view ">
+      
+              <div className="card-interviewer ">
+                  <div className="avatar">
+          <Image src="/ai-avatar.png" alt="profile-image" width={50} height={42} className="object-cover" />
+          {(isSpeaking || isListening || isProcessing) && <span className="animate-speak" />}
         </div>
-        {callStatus === CallStatus.ACTIVE && (
-          <button
-            className="px-6 py-3 bg-green-600 text-white rounded-lg"
-            onClick={startListening}
-            disabled={isListening || isSpeaking || isProcessing}
-          >
-            {isListening ? "Listening..." : "🎤 Speak"}
-          </button>
+        <h3>AI Interviewer</h3>
+        <div className="status-indicator">
+          {isProcessing ? <p className="text-yellow-500 text-sm">🤔 Thinking...</p>
+            : isSpeaking ? <p className="text-green-500 text-sm">🔊 Speaking...</p>
+            : isListening ? <p className="text-blue-500 text-sm">🎤 Listening...</p>
+            : callStatus === CallStatus.ACTIVE ? <p className="text-primary-100 text-sm">Ready</p>
+            : <p className="text-gray-500 text-sm">Not started</p>} 
+        </div>
+        {type === "generate" && callStatus === CallStatus.ACTIVE && setupStage < 4 && (
+          <p className="text-xs mt-1 text-gray-400">Step {setupStage + 1} of 4</p>
+        )}
+        {type === "interview-live" && callStatus === CallStatus.ACTIVE && (
+          <p className="text-xs mt-1 text-gray-400">Live • {conversationCount} exchanges</p>
         )}
       </div>
+
+      <div className="interviewee-card">
+        <div className="card-content">
+          <Image src="/user-avatar.png" alt="profile-image" width={90} height={90} className="rounded-full object-cover size-[90px]" />
+          <h3>{userName}</h3>
+        </div>
       </div>
-    </>
-  );
+    </div>
+
+    {/* Transcript */}
+     {messages.length > 0 && (
+    <div className="transcript-border my-2">
+      <div className="transcript">
+          {messages.filter(m => m.role === "assistant").slice(-1).map((msg, i) => (
+            <p key={i} className="text-base font-medium text-center leading-relaxed px-4">
+              {msg.content}
+            </p>
+          ))}
+        </div>
+      </div>
+    )}
+
+    
+
+      <div className="w-full flex justify-center gap-6 ">
+
+      {callStatus === CallStatus.ACTIVE && (
+        <button
+          className="speak-button"
+          onClick={startListening}
+          disabled={isListening || isSpeaking || isProcessing}
+        >
+          {isListening ? "🎤 Listening..." : "🎤 Speak"}
+        </button>
+      )}
+
+        {callStatus !== "ACTIVE" ? (
+          <button 
+            className="call-button"
+            onClick={startInterview}
+          >
+            {type === "generate" ? "Start Setup" : "Start Interview"}
+          </button>
+        ) : (
+          <button 
+            className="end-button"
+            onClick={endInterview}
+          >
+            End Call
+          </button>
+        )}
+      
+      
+      </div>
+    </div>
+  // </div>
+);
 };
 
 export default Agent;
+
+{/* <div className="w-full flex justify-center">
+        {callStatus !== "ACTIVE" ? (
+          <button className="relative btn-call" onClick={() => handleCall()}>
+            <span
+              className={cn(
+                "absolute animate-ping rounded-full opacity-75",
+                callStatus !== "CONNECTING" && "hidden"
+              )}
+            />
+
+            <span className="relative">
+              {callStatus === "INACTIVE" || callStatus === "FINISHED"
+                ? "Call"
+                : ". . ."}
+            </span>
+          </button>
+        ) : (
+          <button className="btn-disconnect" onClick={() => handleDisconnect()}>
+            End
+          </button>
+        )}
+      </div> */}

@@ -3,11 +3,10 @@ import { Toaster } from 'sonner'
 
 const AuthLayout = ({children} : {children : ReactNode}) => {
   return (
-    <div className='min-h-screen w-full flex items-center justify-center px-4'>
-      <div className='auth-layout'>
+   
+    <div className='min-h-screen w-screen overflow-x-hidden'>
       {children}
       <Toaster />
-    </div>
     </div>
   )
 }
