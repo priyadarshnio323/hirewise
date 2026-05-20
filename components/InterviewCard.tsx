@@ -121,7 +121,7 @@ const InterviewCard = async ({
             height={90}
             className="rounded-full object-cover size-[90px]"
           />
-          <h3 className="mt-5 capitalize">{role} Interview</h3>
+          <h3 className="mt-5 capitalize">{role.trim()} Interview</h3>
           <div className="flex flex-row gap-5 mt-3">
             <div className="flex flex-row gap-2">
               <Image src="/calendar.svg" alt="calendar" width={22} height={22} />

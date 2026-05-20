@@ -70,12 +70,19 @@ import { RxHamburgerMenu } from "react-icons/rx";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { signOut } from "@/lib/actions/auth.action";
+import { FaHome } from "react-icons/fa";
+import { BiNotepad } from "react-icons/bi";
+import { FiSearch } from "react-icons/fi";
+import { MdLogout } from "react-icons/md";
 
 const menuItems = [
-  { label: "Home", icon: "🏠" },
-  { label: "My Interviews", icon: "📋" },
-  { label: "Explore", icon: "🔍" },
-  { label: "Logout", icon: "🚪" },
+  { label: "Home", icon:<FaHome />
+ },
+  { label: "My Interviews", icon: <BiNotepad />
+},
+  { label: "Explore", icon: <FiSearch />
+ },
+  { label: "Logout", icon: <MdLogout /> },
 ];
 
 const MenuButton = () => {

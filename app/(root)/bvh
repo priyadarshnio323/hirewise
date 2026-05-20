@@ -185,4 +185,30 @@ const SearchBar = ({ onSearch }: { onSearch?: (value: string) => void }) => {
 
 export default SearchBar;
 
+
+
+
+
+
+
+import { FaHome } from "react-icons/fa";
+<FaHome />
+
+import { BiNotepad } from "react-icons/bi";
+<BiNotepad />
+
+import { FiSearch } from "react-icons/fi";
+<FiSearch />
+
+import { MdLogout } from "react-icons/md";
+<MdLogout />
+
+
+
+
+
+
 ```
+
+
+

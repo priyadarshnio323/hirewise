@@ -150,7 +150,15 @@ const Page = async () => {
 
       <section className="interview-block">
         <h2>My Interviews</h2>
-        <div className="interviews-section">
+        <div  className='flex flex-col md:flex-row md:justify-between md:items-center gap-2'>
+          <p>Review your past interviews and track your progress.</p>
+        {user && userInterviews.length > 3 && (
+                <Link href="/my-interviews">
+        <Button className="btn-secondary">View More →</Button>
+      </Link>
+  )}
+        </div>
+        <div className="interviews-section items-stretch">
   {user && userInterviews.length > 0 ? (
     userInterviews.slice(0, 3).map((interview) => (
       <InterviewCard 
@@ -172,17 +180,19 @@ const Page = async () => {
     </p>
   )}
 </div>
-         {user && userInterviews.length > 3 && (
-    <div className="flex justify-end mt-4">
-      <Link href="/my-interviews">
-        <Button className="btn-secondary">View More →</Button>
-      </Link>
-    </div>
-  )}
+         
       </section>
 
       <section className='interview-block '>
-        <h2>Explore Interviews</h2>
+       <h2>Explore Interviews</h2>
+        <div  className='flex flex-col md:flex-row md:justify-between md:items-center gap-2'>
+          <p>Discover new interviews created by other users.</p>
+        {user && userInterviews.length > 3 && (
+                <Link href="/explore">
+        <Button className="btn-secondary">View More →</Button>
+      </Link>
+  )}
+        </div>
         <div className='interviews-section'>
           {!user ? (
             <p className="text-gray-500">Please login to see available interviews</p>
@@ -203,13 +213,6 @@ const Page = async () => {
             ))
           )}
         </div>
-         {user && userInterviews.length > 3 && (
-    <div className="flex justify-end mt-4">
-      <Link href="/explore">
-        <Button className="btn-secondary">View More →</Button>
-      </Link>
-    </div>
-  )}
       </section>
     </>
   );
