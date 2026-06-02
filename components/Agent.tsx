@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import BackButton from "./ui/BackButton";
 
 enum CallStatus {
   INACTIVE = "INACTIVE",
