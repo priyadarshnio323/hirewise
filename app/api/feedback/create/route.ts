@@ -4,6 +4,9 @@ import { createFeedback } from "@/lib/actions/general.action";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
+    console.log("========== BODY RECEIVED ==========");
+console.log(JSON.stringify(body, null, 2));
+console.log("==================================");
     console.log("🔵 Feedback API received:", body.interviewId);
     
     const result = await createFeedback(body);
@@ -15,3 +18,4 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: false }, { status: 500 });
   }
 }
+

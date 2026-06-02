@@ -255,12 +255,28 @@
       @apply text-center text-light-100 mt-5;
     }
 
-  .card-interviewer {
+  /* .card-interviewer {
       @apply flex-center flex-col gap-2  h-[350px] blue-gradient-dark rounded-2xl border-2 border-light-100/50 flex-1 sm:basis-1/2 w-full;
-  }
+  } */
 
-  .avatar {
-    @apply z-10 flex items-center justify-center blue-gradient rounded-full size-[120px] relative;
+  .card-interviewer {
+  @apply flex flex-col items-center justify-center
+         gap-3
+         h-[250px] sm:h-[350px]
+         blue-gradient-dark
+         rounded-2xl
+         border-2
+         border-light-100/50
+         flex-1
+         p-5
+         sm:basis-1/2
+         w-full;
+}
+
+  /* .avatar {
+    @apply z-10 flex items-center justify-center blue-gradient rounded-full size-[120px] relative; */
+.avatar {
+  @apply z-10 flex items-center justify-center blue-gradient rounded-full size-[80px] sm:size-[120px] relative;
 
     .animate-speak {
       @apply absolute inline-flex size-5/6 animate-ping rounded-full bg-light-100 opacity-75;
@@ -512,6 +528,38 @@
   @apply text-gray-100;
 }
 
+.foot{
+  @apply flex flex-col;
+
+  .top{
+    @apply bg-gradient-to-r from-[#FF512F] to-[#DD2476] text-center flex justify-center items-center;
+  }
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @utility dark-gradient {
 @apply bg-gradient-to-b from-[#1A1C20] to-[#08090D];
 }
@@ -525,7 +573,7 @@
   @apply bg-[url('/pattern.png')] bg-top bg-no-repeat;
 }
 
-  @utility green-gradient-dark {
+@utility green-gradient-dark {
   @apply bg-gradient-to-b from-[#006400]/50 to-[#08090D]/50;
   }
 

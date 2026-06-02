@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Mona_Sans } from "next/font/google";
 import "./globals.css";
+import Navbar from "@/components/Navbar";
 
 const monaSans = Mona_Sans({
   variable: "--font-mona-sans",
@@ -18,11 +19,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" >
       {/* Add h-full to html and body, and remove any potential margin */}
       <body
         className={`${monaSans.className}`}
       >
+        {/* <Navbar /> */}
         {children}
       </body>
     </html>

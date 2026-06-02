@@ -300,14 +300,18 @@ setMessages(updatedMessages);
       ? (new Date().getTime() - startTimeRef.current.getTime()) / 60000
       : 0;
 
-      if (elapsed >= 3 || conversationCountRef.current >= 2) {
+      if (elapsed >= 3 || conversationCountRef.current >= 4) {
     const endMsg = "That wraps up our interview! Generating your feedback now...";
     setMessages(prev => [...prev, { role: "assistant" as const, content: endMsg }]);
     await speakText(endMsg);
 
+    console.log("========== TRANSCRIPT SENT ==========");
+console.log(updatedMessages);
+console.log(JSON.stringify(updatedMessages, null, 2));
+console.log("====================================");
     // ✅ save feedback before redirecting
     try {
-      await fetch("/api/feedback/create", {
+      const res = await fetch("/api/feedback/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -316,6 +320,9 @@ setMessages(updatedMessages);
           transcript: updatedMessages,  // ✅ full conversation
         }),
       });
+      const data = await res.json();
+
+console.log("Feedback API Response:", data);
     } catch (e) {
       console.error("Feedback error:", e);
     }
@@ -516,8 +523,8 @@ const endInterview = async () => {
               <div className="call-view ">
       
               <div className="card-interviewer ">
-                  <div className="avatar">
-          <Image src="/ai-avatar.png" alt="profile-image" width={50} height={42} className="object-cover" />
+                  <div className="flex avatar">
+          <Image src="/ai-avatar.png" alt="profile-image" width={50} height={42} className="object-cover " />
           {(isSpeaking || isListening || isProcessing) && <span className="animate-speak" />}
         </div>
         <h3>AI Interviewer</h3>
@@ -596,25 +603,3 @@ const endInterview = async () => {
 
 export default Agent;
 
-{/* <div className="w-full flex justify-center">
-        {callStatus !== "ACTIVE" ? (
-          <button className="relative btn-call" onClick={() => handleCall()}>
-            <span
-              className={cn(
-                "absolute animate-ping rounded-full opacity-75",
-                callStatus !== "CONNECTING" && "hidden"
-              )}
-            />
-
-            <span className="relative">
-              {callStatus === "INACTIVE" || callStatus === "FINISHED"
-                ? "Call"
-                : ". . ."}
-            </span>
-          </button>
-        ) : (
-          <button className="btn-disconnect" onClick={() => handleDisconnect()}>
-            End
-          </button>
-        )}
-      </div> */}

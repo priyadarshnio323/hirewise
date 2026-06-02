@@ -43,7 +43,7 @@ const Page = async ({ searchParams }: PageProps) => {
 
   return (
     <>
-      <Navbar />
+    <Navbar />      
       <section className='interview-block-explore'>
         <div className='flex flex-row justify-between items-center flex-wrap gap-3'>
           <h2>Explore Interviews</h2>

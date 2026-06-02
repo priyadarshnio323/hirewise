@@ -5,8 +5,10 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signOut } from "@/lib/actions/auth.action";
 import MenuButton from "./ui/MenuButton";
+import { Button } from "./ui/Button";
+import { ArrowLeft } from "lucide-react";
 
-const Navbar = () => {
+const InterviewNavbar = () => {
   const [open, setOpen] = useState(false);
   const router = useRouter();
 
@@ -20,22 +22,22 @@ const Navbar = () => {
         <h3 className="text-dark-100 font-sans font-extralight">HireWise</h3>
       </Link>
 
-      <div className="text-light-400 hidden md:flex items-center gap-12 ml-auto z-60">
-        <button onClick={() => router.push("/")} className="hover:text-dark-100 transition-colors cursor-pointer">
-          Home
-        </button>
-        <button onClick={() => router.push("/my-interviews")} className="hover:text-dark-100 transition-colors cursor-pointer">
-          My Interviews
-        </button>
-        <button onClick={() => router.push("/explore")} className="hover:text-dark-100 transition-colors cursor-pointer">
-          Explore
-        </button>
-        <div className="relative ml-auto ">
+      <div className="text-light-400 hidden md:flex items-center gap-12 ml-auto">
+        
+        {/* <button onClick={() => router.push("/")} className="hover:text-dark-100 transition-colors cursor-pointer">
+          Exit
+        </button> */}
+
+        {/* <Button variant="outline" className="w-fit" onClick={() => router.back()}>
+        <ArrowLeft className="size-4" />
+        Back
+    </Button>  */}
+        <div className="relative ml-auto">
           {/* Avatar */}
 
           <button
             onClick={() => setOpen(!open)}
-            className="w-10 h-10 rounded-full bg-gray-100  text-dark-100 flex items-center justify-center font-semibold cursor-pointer"
+            className="w-10 h-10 rounded-full bg-gray-100  text-dark-100 flex items-center justify-center font-semibold"
           >
             {initial}
           </button>
@@ -66,8 +68,4 @@ const Navbar = () => {
       );
 };
 
-export default Navbar;
-
-
-
-
+export default InterviewNavbar;

@@ -60,7 +60,15 @@ export async function createInterview(params: {
 }
 
 export async function createFeedback(params: CreateFeedbackParams) {
+  
   const { interviewId, userId, transcript, feedbackId } = params;
+  console.log("========== TRANSCRIPT RECEIVED ==========");
+console.log(JSON.stringify(transcript, null, 2));
+console.log("========================================");
+  console.log("🚀 createFeedback started");
+console.log("Interview:", interviewId);
+console.log("Transcript length:", transcript.length);
+console.log("🤖 Calling Gemini...");
 
   try {
     const formattedTranscript = transcript
@@ -68,7 +76,10 @@ export async function createFeedback(params: CreateFeedbackParams) {
         `- ${sentence.role}: ${sentence.content}\n`
       )
       .join("");
-
+await db.collection("debug").doc(interviewId).set({
+  transcript,
+  formattedTranscript,
+});
     // ✅ use existing genAI — no new package needed
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
@@ -99,8 +110,16 @@ export async function createFeedback(params: CreateFeedbackParams) {
       - Problem-Solving: Ability to analyze problems and propose solutions.
       - Cultural & Role Fit: Alignment with company values and job role.
       - Confidence & Clarity: Confidence in responses, engagement, and clarity.
-    `;
+      Evaluate the entire interview transcript.
 
+Do not base the assessment on a single answer.
+
+Consider all responses collectively.
+
+If one answer is incomplete but previous answers demonstrate knowledge, reflect that balance in the assessment.
+    `;
+console.log("FORMATTED TRANSCRIPT:");
+console.log(formattedTranscript);
     const result = await model.generateContent(prompt);
     const text = result.response.text();
     const clean = text.replace(/```json\n?|\n?```/g, "").trim();
@@ -167,7 +186,7 @@ export async function createFeedback(params: CreateFeedbackParams) {
       finalAssessment: "The candidate completed the interview session. Please retake for detailed AI feedback.",
       createdAt: new Date().toISOString(),
     };
-    const feedbackRef = db.collection("feedback").doc();
+    const feedbackRef = db.collection("feedback").doc(interviewId);
     await feedbackRef.set(fallbackFeedback);
     return { success: true, feedbackId: feedbackRef.id };
   } catch (e) {
