@@ -5,20 +5,27 @@ import { db } from "@/firebase/admin";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
+// export async function createInterview(params: {
+//   role: string;
+//   techstack: string[];
+//   level: string;
+//   type: string;
+//   userId: string;
+// }): Promise<{ success: boolean; interviewId?: string }> {17/7
 export async function createInterview(params: {
   role: string;
   techstack: string[];
   level: string;
   type: string;
   userId: string;
-}): Promise<{ success: boolean; interviewId?: string }> {
+}): Promise<{ success: boolean; interviewId?: string; error?: string }> {
   try {
     const { role, techstack, level, type, userId } = params;
 
     let questions = [];
     
     try {
-      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-3.5-flash" });
       const prompt = `Generate 5 interview questions for a ${level} ${role} who works with ${techstack.join(", ")}. Return ONLY a JSON array of 5 strings, no extra text.`;
       
       const result = await model.generateContent(prompt);
@@ -53,9 +60,12 @@ export async function createInterview(params: {
     console.log("✅ Interview created:", docRef.id);
     return { success: true, interviewId: docRef.id };
 
-  } catch (error) {
+  // } catch (error) {
+  //   console.error("❌ Error creating interview:", error);
+  //   return { success: false };17/7
+  } catch (error: any) {
     console.error("❌ Error creating interview:", error);
-    return { success: false };
+    return { success: false, error: error.message || String(error) };
   }
 }
 
@@ -81,7 +91,7 @@ await db.collection("debug").doc(interviewId).set({
   formattedTranscript,
 });
     // ✅ use existing genAI — no new package needed
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-3.5-flash" });
 
     const prompt = `
       You are an AI interviewer analyzing a mock interview. Evaluate the candidate thoroughly. Don't be lenient. Point out mistakes and areas for improvement.
@@ -155,15 +165,20 @@ console.log(formattedTranscript);
       createdAt: new Date().toISOString(),
     };
 
-    let feedbackRef;
-    if (feedbackId) {
-      feedbackRef = db.collection("feedback").doc(feedbackId);
-    } else {
-      feedbackRef = db.collection("feedback").doc();
-    }
+    // let feedbackRef;
+    // if (feedbackId) {
+    //   feedbackRef = db.collection("feedback").doc(feedbackId);
+    // } else {
+    //   feedbackRef = db.collection("feedback").doc();
+    // }
 
-    await feedbackRef.set(feedback);
-    return { success: true, feedbackId: feedbackRef.id };
+    // await feedbackRef.set(feedback);
+    // return { success: true, feedbackId: feedbackRef.id };
+    //17/7
+    // in createFeedback, success path
+const feedbackRef = db.collection("feedback").doc(interviewId);
+await feedbackRef.set(feedback);
+return { success: true, feedbackId: feedbackRef.id };
 
   } catch (error) {
   console.error("Error saving feedback:", error);
@@ -200,6 +215,23 @@ export async function getInterviewById(id: string): Promise<Interview | null> {
   return interview.data() as Interview | null;
 }
 
+// export async function getFeedbackByInterviewId(
+//   params: GetFeedbackByInterviewIdParams
+// ): Promise<Feedback | null> {
+//   const { interviewId, userId } = params;
+
+//   const querySnapshot = await db
+//     .collection("feedback")
+//     .where("interviewId", "==", interviewId)
+//     .where("userId", "==", userId)
+//     .limit(1)
+//     .get();
+
+//   if (querySnapshot.empty) return null;
+
+//   const feedbackDoc = querySnapshot.docs[0];
+//   return { id: feedbackDoc.id, ...feedbackDoc.data() } as Feedback;
+// }17/7
 export async function getFeedbackByInterviewId(
   params: GetFeedbackByInterviewIdParams
 ): Promise<Feedback | null> {
@@ -209,6 +241,7 @@ export async function getFeedbackByInterviewId(
     .collection("feedback")
     .where("interviewId", "==", interviewId)
     .where("userId", "==", userId)
+    .orderBy("createdAt", "desc")   // ✅ always get the freshest
     .limit(1)
     .get();
 

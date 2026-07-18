@@ -120,10 +120,10 @@ Instructions:
 Your response:`;
     }
 
-    console.log("📤 Sending to Gemini API with model: gemini-2.5-flash");
+    console.log("📤 Sending to Gemini API with model: gemini-3.5-flash");
     console.log("📝 isFirstQuestion:", isFirstQuestion);
 
-    const MODEL_NAME = "gemini-2.5-flash";
+    const MODEL_NAME = "gemini-3.5-flash";
 
     const callGemini = async (modelName: string) => {
       return await fetch(
@@ -148,7 +148,7 @@ Your response:`;
     let data = await response.json();
     console.log("📥 Gemini response status:", response.status);
 
-    // ✅ fallback to gemini-2.0-flash if first fails
+    // ✅ fallback to gemini-3.5-flash if first fails
     if (!response.ok) {
       console.error("❌ Primary model failed, trying fallback...");
 
@@ -159,7 +159,7 @@ Your response:`;
         });
       }
 
-      response = await callGemini("gemini-2.0-flash");
+      response = await callGemini("gemini-3.5-flash");
       data = await response.json();
 
       if (!response.ok) {

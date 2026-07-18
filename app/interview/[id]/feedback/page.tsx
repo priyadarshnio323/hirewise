@@ -10,7 +10,7 @@ import { GoStarFill } from "react-icons/go";
 import { BsFillCalendar2Fill } from "react-icons/bs";
 import FeedbackButtons from "@/components/ui/FeedbackButtons";
 
-
+export const dynamic = "force-dynamic";
 
 const Feedback = async ({ params }: { params: { id: string } }) => {
   const { id } = await params;
